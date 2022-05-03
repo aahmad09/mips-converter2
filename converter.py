@@ -1,6 +1,6 @@
-from posixpath import split
 from typing import List
 import names
+from names import *
 
 
 def rType(instList: str) -> str:
@@ -90,6 +90,81 @@ def convertMipsToBin(mipsInst: str, regFlags: bool) -> str:
     return converted
 
 
+def breakdownBinary(binary):
+    op = binary[:6]
+
+    mipsop = getOpBinary(op)
+    format = formats.get(mipsop)
+    if format == "R":
+        rs = binary[6:11]
+        rt = binary[11:16]
+        rd = binary[16:21]
+        shamt = binary[21:26]
+        functt = binary[26:32]
+
+        print(op + rs + rt + rd + shamt + functt)
+
+        getop = getFunctBinary(functt)
+
+        getrs = getRegisterBinary(rs)
+
+        getrt = getRegisterBinary(rt)
+
+        getrd = getRegisterBinary(rd)
+        holdshamt = int(shamt, 2)
+        if holdshamt != 0:
+            print(getop + " " + getrs + " " + getrt + " 0x" + str(holdshamt))
+        else:
+            print(getop + " " + getrs + " " + getrt + " " + rd)
+
+    elif format == "I":
+        rs = binary[6:11]
+        rt = binary[11:16]
+        immediate = binary[16:32]
+
+        getop = getOpBinary(op)
+
+        getrs = getRegisterBinary(rs)
+
+        getrt = getRegisterBinary(rt)
+
+        getImmediate = immediate
+        hexstr = convertImmediate(getImmediate)
+
+        print(getop + " " + getrt + " " + getrs + " " + hexstr)
+
+    elif format == "J":
+        address = binary[6:32]
+        getop = getOpBinary(op)
+        hexstr = convertImmediate(address)
+
+        print(getop + " " + hexstr)
+
+
+def convertImmediate(binaryr):
+    bin = int(binaryr, 2)
+    ret = hex(bin)
+    return ret
+
+
+def getRegisterBinary(binaryr):
+    return get_key(binaryr, binaryregisters)
+
+
+def getOpBinary(binaryr):
+    return get_key(binaryr, binaryop)
+
+
+def getFunctBinary(binary):
+    return get_key(binary, binaryfunctt)
+
+
+def get_key(val, dict):
+    for key, value in dict.items():
+        if val == value:
+            return key
+
+
 def main():
     ###
     # Uses a while loop to get mips instruction and converts to bin equivalent until the user enters "exit"
@@ -97,6 +172,16 @@ def main():
     f = open("guide.txt", "r")
     help_contents = f.read()
     print(help_contents)
+
+    # A boolean to indicate whether to convert binary to mips or mips to binary
+    conversionTypeFlag = (
+        True
+        if input(
+            "Do you want to convert mips to binary or binary to mips? Enter 'y' for mips to binary, 'n' for binary to mips: "
+        ).lower()
+        == "y"
+        else False
+    )
 
     # a boolean to indicate whether to use reg names or reg numbers
     regNamesFlag = (
@@ -108,32 +193,43 @@ def main():
         else False
     )
 
-    print("-" * 120)
-    mipsInst = (
-        input("Enter binary MIPS instruction to be converted: ")
-        .lower()
-        .replace(",", "")
-        .replace("$", "")
-    )
+    if conversionTypeFlag:
+        print("-" * 120)
+        mipsInst = (
+            input("Enter MIPS instruction to be converted: ")
+            .lower()
+            .replace(",", "")
+            .replace("$", "")
+        )
 
-    try:
-        while mipsInst != "exit":
-            if mipsInst == "help":
-                f = open("help.txt", "r")
-                help_contents = f.read()
-                print(help_contents)
+        try:
+            while mipsInst != "exit":
+                print(
+                    f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst, regNamesFlag)}"
+                )
+                print("-" * 120)
+                mipsInst = (
+                    input("Enter binary MIPS instruction to be converted: ")
+                    .lower()
+                    .replace(",", "")
+                    .replace("$", "")
+                )
+        except:
             print(
-                f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst, regNamesFlag)}"
+                "\nERROR: Invalid mips instruction format or mips instruction not supported."
             )
-            print("-" * 120)
-            mipsInst = (
-                input("Enter binary MIPS instruction to be converted: ")
-                .lower()
-                .replace(",", "")
-                .replace("$", "")
+    else:
+        print("-" * 120)
+        binaryInst = input("Enter binary instruction to be converted: ")
+        try:
+            while binaryInst != "exit":
+                breakdownBinary(binaryInst)
+                print("-" * 120)
+                binaryInst = input("Enter binary instruction to be converted: ")
+        except:
+            print(
+                "\nERROR: Invalid binary instruction format or binary instruction not supported."
             )
-    except:
-        print("ERROR: Invalid instruction format or instruction not supported.")
 
 
 if __name__ == "__main__":
