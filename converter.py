@@ -116,24 +116,24 @@ def main():
         .replace("$", "")
     )
 
-    # try:
-    while mipsInst != "exit":
-        if mipsInst == "help":
-            f = open("help.txt", "r")
-            help_contents = f.read()
-            print(help_contents)
-        print(
-            f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst, regNamesFlag)}"
-        )
-        print("-" * 120)
-        mipsInst = (
-            input("Enter binary MIPS instruction to be converted: ")
-            .lower()
-            .replace(",", "")
-            .replace("$", "")
-        )
-    # except:
-    #     print("ERROR: Invalid instruction format or instruction not supported.")
+    try:
+        while mipsInst != "exit":
+            if mipsInst == "help":
+                f = open("help.txt", "r")
+                help_contents = f.read()
+                print(help_contents)
+            print(
+                f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst, regNamesFlag)}"
+            )
+            print("-" * 120)
+            mipsInst = (
+                input("Enter binary MIPS instruction to be converted: ")
+                .lower()
+                .replace(",", "")
+                .replace("$", "")
+            )
+    except:
+        print("ERROR: Invalid instruction format or instruction not supported.")
 
 
 if __name__ == "__main__":
