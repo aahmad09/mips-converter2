@@ -1,3 +1,5 @@
+from posixpath import split
+from typing import List
 import names
 
 
@@ -64,8 +66,26 @@ def convertDecToBin(dec: str) -> str:
     return str(bin(int(dec))[2:])
 
 
-def convertMipsToBin(mipsInst: str) -> str:
+def convertToRegName(operands: List[str]) -> List[str]:
+    if operands[0] in ["lw", "sw"]:
+        splittedIns = operands[-1].split("(")
+        reg = str(names.registersNames[splittedIns[-1][:-1]])
+        lastOperand = splittedIns[0] + "(" + reg + ")"
+        return (
+            [operands[0]]
+            + list(map(lambda x: names.registersNames[x], operands[1:-1]))
+            + [lastOperand]
+        )
+    else:
+        return [operands[0]] + list(
+            map(lambda x: names.registersNames[x], operands[1:])
+        )
+
+
+def convertMipsToBin(mipsInst: str, regFlags: bool) -> str:
     seperatedInst = mipsInst.split()
+    if regFlags:
+        seperatedInst = convertToRegName(seperatedInst)
     converted = names.instructionHandler[seperatedInst[0]](seperatedInst)
     return converted
 
@@ -78,7 +98,17 @@ def main():
     help_contents = f.read()
     print(help_contents)
 
-    print("-" * 80)
+    # a boolean to indicate whether to use reg names or reg numbers
+    regNamesFlag = (
+        True
+        if input(
+            "Do you want to use register names or register numbers? Enter 'y' for register names, 'n' for register numbers: "
+        ).lower()
+        == "y"
+        else False
+    )
+
+    print("-" * 120)
     mipsInst = (
         input("Enter binary MIPS instruction to be converted: ")
         .lower()
@@ -86,22 +116,24 @@ def main():
         .replace("$", "")
     )
 
-    try:
-        while mipsInst != "exit":
-            if mipsInst == "help":
-                f = open("help.txt", "r")
-                help_contents = f.read()
-                print(help_contents)
-            print(f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst)}")
-            print("-" * 80)
-            mipsInst = (
-                input("Enter binary MIPS instruction to be converted: ")
-                .lower()
-                .replace(",", "")
-                .replace("$", "")
-            )
-    except:
-        print("ERROR: Invalid instruction format or instruction not supported.")
+    # try:
+    while mipsInst != "exit":
+        if mipsInst == "help":
+            f = open("help.txt", "r")
+            help_contents = f.read()
+            print(help_contents)
+        print(
+            f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst, regNamesFlag)}"
+        )
+        print("-" * 120)
+        mipsInst = (
+            input("Enter binary MIPS instruction to be converted: ")
+            .lower()
+            .replace(",", "")
+            .replace("$", "")
+        )
+    # except:
+    #     print("ERROR: Invalid instruction format or instruction not supported.")
 
 
 if __name__ == "__main__":
