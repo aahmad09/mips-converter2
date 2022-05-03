@@ -10,7 +10,7 @@ def breakdownBinary(binary):
         shamt = binary[21:26]
         functt = binary[26:32]
 
-        print(op + '\n' + rs + '\n' + rt + '\n' + rd + '\n' + shamt + '\n' + functt)
+        print(op + rs + rt + rd+ shamt + functt)
 
         getop = getFunctBinary(functt)
 
