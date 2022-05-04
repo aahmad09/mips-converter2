@@ -124,14 +124,17 @@ def breakdownBinary(binary):
 
         getop = getOpBinary(op)
 
+
         getrs = getRegisterBinary(rs)
 
         getrt = getRegisterBinary(rt)
 
         getImmediate = immediate
         hexstr = convertImmediate(getImmediate)
-
-        print(getop + " " + getrt + " " + getrs + " " + hexstr)
+        if getop == 'lw' or getop == 'sw':
+            print(getop + " " + getrt + " " + "(" + hexstr + ")" + " " + getrs)
+        else:
+            print(getop + " " + getrt + " " + getrs + " " + hexstr)
 
     elif format == "J":
         address = binary[6:32]
