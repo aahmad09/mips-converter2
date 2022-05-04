@@ -115,7 +115,7 @@ def breakdownBinary(binary):
         if holdshamt != 0:
             print(getop + " " + getrs + " " + getrt + " 0x" + str(holdshamt))
         else:
-            print(getop + " " + getrd + " " + getrt + " " + getrs)
+            print(getop + " " + getrd + " " + getrs + " " + getrt)
 
     elif format == "I":
         rs = binary[6:11]
