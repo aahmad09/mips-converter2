@@ -76,6 +76,12 @@ def convertToRegName(operands: List[str]) -> List[str]:
             + list(map(lambda x: names.registersNames[x], operands[1:-1]))
             + [lastOperand]
         )
+    elif operands[0] in ["beq", "bne"]:
+        return (
+            [operands[0]]
+            + list(map(lambda x: names.registersNames[x], operands[1:-1]))
+            + [operands[-1]]
+        )
     else:
         return [operands[0]] + list(
             map(lambda x: names.registersNames[x], operands[1:])
@@ -124,14 +130,13 @@ def breakdownBinary(binary):
 
         getop = getOpBinary(op)
 
-
         getrs = getRegisterBinary(rs)
 
         getrt = getRegisterBinary(rt)
 
         getImmediate = immediate
         hexstr = convertImmediate(getImmediate)
-        if getop == 'lw' or getop == 'sw':
+        if getop == "lw" or getop == "sw":
             print(getop + " " + getrt + " " + "(" + hexstr + ")" + " " + getrs)
         else:
             print(getop + " " + getrt + " " + getrs + " " + hexstr)
