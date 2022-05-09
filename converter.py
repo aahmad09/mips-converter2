@@ -3,6 +3,7 @@ import names
 from names import *
 
 
+## function to handle rType instructions
 def rType(instList: str) -> str:
     bin_shamt = "00000"
     operation = instList[0]
@@ -62,6 +63,7 @@ def jType(instList: str) -> str:
     return binOpCode + binAddress
 
 
+# a simple function that converts decimal to binary equivalent using python in built functions
 def convertDecToBin(dec: str) -> str:
     return str(bin(int(dec))[2:])
 
@@ -88,10 +90,15 @@ def convertToRegName(operands: List[str]) -> List[str]:
         )
 
 
+# a function that determines what type of instruction it is
 def convertMipsToBin(mipsInst: str, regFlags: bool) -> str:
+    # splits on space character to get all operands/symbols
     seperatedInst = mipsInst.split()
+    # if using register names then this conditional converts it to register numbers
     if regFlags:
         seperatedInst = convertToRegName(seperatedInst)
+
+    # uses a dictionary to decide what type of instruction it is and passes it to the appropriate function
     converted = names.instructionHandler[seperatedInst[0]](seperatedInst)
     return converted
 
@@ -177,6 +184,8 @@ def main():
     ###
     # Uses a while loop to get mips instruction and converts to bin equivalent until the user enters "exit"
     ##
+
+    # uses file handling to read guide.txt and prints it fully
     f = open("guide.txt", "r")
     help_contents = f.read()
     print(help_contents)
@@ -201,22 +210,24 @@ def main():
         else False
     )
 
+    # mips to binary or binary to mips depending on the user input
     if conversionTypeFlag:
         print("-" * 120)
         mipsInst = (
             input("Enter MIPS instruction to be converted: ")
             .lower()
-            .replace(",", "")
+            .replace(",", "")  ## string manipulation to standardize the instruction
             .replace("$", "")
         )
 
+        # try catch to handle exceptions in code
         try:
-            while mipsInst != "exit":
+            while mipsInst != "exit":  # loop until user enters "exit"
                 print(
                     f"\tConverted instruction in binary:  {convertMipsToBin(mipsInst, regNamesFlag)}"
                 )
                 print("-" * 120)
-                mipsInst = (
+                mipsInst = (  # get next instruction
                     input("Enter binary MIPS instruction to be converted: ")
                     .lower()
                     .replace(",", "")
