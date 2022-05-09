@@ -39,6 +39,7 @@ def rType(instList: str) -> str:
     # returns the string concat of all the fields
     return binOpCode + bin_rs + bin_rt + bin_rd + bin_shamt + bin_funct
 
+
 ## function to handle iType instructions
 def iType(instList: str) -> str:
     operation = instList[0]
@@ -59,6 +60,7 @@ def iType(instList: str) -> str:
         bin_rs = convertDecToBin(instList[2]).zfill(5)
 
     return binOpCode + bin_rs + bin_rt + bin_imm
+
 
 ## function to handle jType instructions
 def jType(instList: str) -> str:
@@ -84,7 +86,7 @@ def convertToRegName(operands: List[str]) -> List[str]:
             + list(map(lambda x: names.registersNames[x], operands[1:-1]))
             + [lastOperand]
         )
-    elif operands[0] in ["beq", "bne"]:
+    elif operands[0] in ["beq", "bne", "sll", "srl"]:
         return (
             [operands[0]]
             + list(map(lambda x: names.registersNames[x], operands[1:-1]))
