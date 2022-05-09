@@ -12,7 +12,7 @@ Note: for lw and sw, instructions must be entered in this format, i.e. with para
 
 Binary to MIPS    
 Supported instructions are 
-    - R type: add, addu, and, sub, subu, sll, srl, mfhi, mflo, jr, nor, or, slt, sltu,
+    - R type: add, addu, and, sub, subu, mfhi, mflo, jr, nor, or, slt, sltu,
     - I Type*: addi, addiu, lw, beq, bne, sw, lbu, lhu, li, lui, ori, slti, sltiu, sb, sc, sh, sw,
     - J Type: j, jal
 Note: Parentheses are not added to registers when converting.
