@@ -5,12 +5,16 @@ from names import *
 
 ## function to handle rType instructions
 def rType(instList: str) -> str:
+    # by default shamt is 000000
     bin_shamt = "00000"
     operation = instList[0]
+    # gets op code and function code from the dictionary
     binOpCode = names.insCodes[operation][0]
     bin_funct = names.insCodes[operation][1]
 
+    # zfill is an inbuilt function that pads the string with zeros until it is n characters long
     if operation in ["sll", "srl"]:
+        # converts rd, rt, and shamt to thier binary equivalent and pads the string so each is 5 characters long
         bin_rd = convertDecToBin(instList[1]).zfill(5)
         bin_rt = convertDecToBin(instList[2]).zfill(5)
         bin_rs = "00000"
@@ -32,9 +36,10 @@ def rType(instList: str) -> str:
         bin_rs = convertDecToBin(instList[2]).zfill(5)
         bin_rt = convertDecToBin(instList[3]).zfill(5)
 
+    # returns the string concat of all the fields
     return binOpCode + bin_rs + bin_rt + bin_rd + bin_shamt + bin_funct
 
-
+## function to handle iType instructions
 def iType(instList: str) -> str:
     operation = instList[0]
     binOpCode = names.insCodes[operation][0]
@@ -44,6 +49,7 @@ def iType(instList: str) -> str:
         bin_rt = convertDecToBin(instList[2]).zfill(5)
         bin_imm = convertDecToBin(instList[3]).zfill(16)
     elif operation in ["lw", "sw"]:
+        # special cases for handling lw and sw instructions which are in format sw $rt, imm($rs)
         splittedIns = instList[2].split("(")
         bin_imm = convertDecToBin(splittedIns[0]).zfill(16)
         bin_rs = convertDecToBin(splittedIns[1][:-1]).zfill(5)
@@ -54,7 +60,7 @@ def iType(instList: str) -> str:
 
     return binOpCode + bin_rs + bin_rt + bin_imm
 
-
+## function to handle jType instructions
 def jType(instList: str) -> str:
     operation = instList[0]
     address = instList[1]
